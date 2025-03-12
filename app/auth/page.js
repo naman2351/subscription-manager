@@ -10,7 +10,7 @@ export default function AuthSelection() {
       <div className="space-y-4">
         <button
           onClick={() => router.push("/auth/signup")}
-          className="bg-blue-500 text-white px-6 py-2 m-4 rounded shadow-md hover:bg-blue-600"
+          className="bg-blue-500 text-white px-6 py-2 m-4 rounded shadow-md hover:bg-blue-600 hover:cursor-pointer"
         >
           Sign Up
         </button>
