@@ -58,7 +58,7 @@ export default function SignUp() {
             required
             className="p-2 my-2 bg-gray-700 rounded"
           />
-          <button type="submit" className="mt-4 p-2 bg-blue-600 hover:bg-blue-500 rounded">
+          <button type="submit" className="mt-4 p-2 bg-blue-600 hover:bg-blue-500 rounded hover:cursor-pointer">
             Sign Up
           </button>
         </form>

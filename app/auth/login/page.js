@@ -22,8 +22,8 @@ export default function Login() {
 
     if (response.ok) {
       sessionStorage.setItem("userEmail", email);
-    //   router.push("/dashboard");
-        alert("Login Successful!")
+      router.push("/dashboard");
+      alert("Login Successful!")
     } else {
       setError(data.message);
     }

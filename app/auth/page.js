@@ -6,7 +6,7 @@ export default function AuthSelection() {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-2xl font-bold mb-6">Welcome to Subscription Manager</h1>
+      <h1 className="text-2xl font-bold mb-6">Welcome to <span className="text-orange-500">SubSync</span></h1>
       <div className="space-y-4">
         <button
           onClick={() => router.push("/auth/signup")}
