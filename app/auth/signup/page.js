@@ -27,7 +27,7 @@ export default function SignUp() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-900 text-white">
+    <div className="flex justify-center items-center h-screen bg-gray-900 text-white font-[Roboto]">
       <div className="p-8 bg-gray-800 rounded-md shadow-md w-96">
         <h2 className="text-2xl font-bold text-center">Sign Up</h2>
         <form onSubmit={handleSubmit} className="flex flex-col mt-4">
@@ -58,7 +58,7 @@ export default function SignUp() {
             required
             className="p-2 my-2 bg-gray-700 rounded"
           />
-          <button type="submit" className="mt-4 p-2 bg-blue-600 hover:bg-blue-500 rounded hover:cursor-pointer">
+          <button type="submit" className="mt-4 p-2 bg-blue-600 hover:bg-blue-500 rounded hover:cursor-pointer hover:scale-105 transition duration-300">
             Sign Up
           </button>
         </form>

@@ -54,12 +54,12 @@ const Subscriptions = () => {
 
   const checkRenewalNotifications = (subscriptions) => {
     const today = new Date();
-    const notificationDays = [10, 5, 3, 2, 1, 0]; // Days before renewal
+    const notificationDays = [10, 5, 3, 2, 1, 0];
 
     subscriptions.forEach((sub) => {
       sub.payment_dates.forEach((date) => {
         const renewalDate = new Date(date);
-        const diffDays = Math.ceil((renewalDate - today) / (1000 * 60 * 60 * 24)); // Days difference
+        const diffDays = Math.ceil((renewalDate - today) / (1000 * 60 * 60 * 24));
 
         if (notificationDays.includes(diffDays)) {
           sendNotification(sub.name, sub.amount, diffDays);
@@ -77,7 +77,7 @@ const Subscriptions = () => {
 
       new Notification("Subscription Renewal Reminder", {
         body: message,
-        icon: "/subscription-icon.png", // Optional: Add an icon
+        icon: "/subscription-icon.png",
       });
     }
   };
@@ -90,7 +90,6 @@ const Subscriptions = () => {
         <p className="text-red-500">You need to log in to see your subscriptions.</p>
       ) : (
         <>
-          {/* Subscription List */}
           <div className="space-y-4">
             {subscriptions.length === 0 ? (
               <p className="text-gray-500">No subscriptions found for {userEmail}.</p>
@@ -107,10 +106,8 @@ const Subscriptions = () => {
               ))
             )}
           </div>
-
-          {/* Summary Section */}
           {subscriptions.length > 0 && (
-            <div className="mt-8 p-6 bg-gray-100 rounded-lg shadow-md">
+            <div className="mt-8 p-6 bg-gray-500 rounded-lg shadow-md">
               <h2 className="text-2xl font-bold">Expense Summary</h2>
               <p><strong>Total Monthly Spending:</strong> ₹{monthlyTotal.toFixed(2)}</p>
               <p><strong>Total Yearly Spending:</strong> ₹{yearlyTotal.toFixed(2)}</p>
