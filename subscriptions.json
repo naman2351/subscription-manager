@@ -5,7 +5,7 @@
       "email": "a@1",
       "amount": 600,
       "interval": "monthly",
-      "payment_dates": ["2025-01-10", "2025-02-10", "2025-03-10"],
+      "payment_dates": ["2025-01-10", "2025-02-10", "2025-03-22"],
       "yearly_cost": 7200,
       "registeredUserEmail": "a@1"
     },

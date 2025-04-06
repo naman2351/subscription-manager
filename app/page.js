@@ -5,7 +5,7 @@ export default function AuthSelection() {
   const router = useRouter();
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen font-[Roboto]">
+    <div className="flex flex-col items-center justify-center h-screen font-[Montserrat]">
       <h1 className="text-2xl font-bold mb-6">Welcome to <span className="text-orange-500">SubSync</span></h1>
       <div className="space-y-4">
         <button

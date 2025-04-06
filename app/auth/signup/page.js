@@ -27,7 +27,7 @@ export default function SignUp() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-900 text-white font-[Roboto]">
+    <div className="flex justify-center items-center h-screen bg-gray-900 text-white font-[Montserrat]">
       <div className="p-8 bg-gray-800 rounded-md shadow-md w-96">
         <h2 className="text-2xl font-bold text-center">Sign Up</h2>
         <form onSubmit={handleSubmit} className="flex flex-col mt-4">
