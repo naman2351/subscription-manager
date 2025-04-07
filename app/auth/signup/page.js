@@ -1,7 +1,9 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SignUp() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -24,6 +26,9 @@ export default function SignUp() {
 
     const data = await response.json();
     setMessage(data.message);
+    if (response.ok){
+      router.push('/auth/login');
+    }
   };
 
   return (

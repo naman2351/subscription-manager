@@ -22,7 +22,7 @@ export default function Login() {
 
     if (response.ok) {
       sessionStorage.setItem("userEmail", email);
-      router.push("/dashboard");
+      router.push("/addSubscriptions");
     } else {
       setError(data.message);
     }
