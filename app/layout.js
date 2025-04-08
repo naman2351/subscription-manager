@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Subscription Manager",
+  title: "SubSync",
   description: "Manage your subscriptions easily",
 };
 

@@ -12,7 +12,6 @@ export default function addSubscriptions() {
     });
 
     const [message, setMessage] = useState("");
-    const [error, seterror] = useState("");
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -47,7 +46,7 @@ export default function addSubscriptions() {
                         className="p-2 my-2 bg-gray-700 rounded"
                     ></input>
                     <input
-                        type="text"
+                        type="email"
                         name="registered_email"
                         placeholder="Email used for registration"
                         value={formData.registered_email}

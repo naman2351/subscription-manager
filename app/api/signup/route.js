@@ -1,4 +1,4 @@
-import pool from "@/app/lib/db.js"
+import pool from "@/app/lib/db.js";
 import bcrypt from "bcryptjs";
 
 export async function POST(req) {
@@ -9,6 +9,18 @@ export async function POST(req) {
     
     connection = await pool.getConnection();
     await connection.beginTransaction();
+
+    const emails = await connection.query(
+      "select email from users"
+    );
+  
+    console.log(emails)
+    const emailExists = emails[0].find((e) => e.email === email);
+    console.log(emailExists);
+    if (emailExists){
+      return Response.json({ message: "User already exists" }, { status: 500 });
+    }
+
     let new_user_id = 0;
     const check_user_id = await connection.query(
       'select userid from users order by userid desc limit 1'
@@ -26,7 +38,7 @@ export async function POST(req) {
     connection.commit();
     connection.release();
 
-    return Response.json({ message: "User registered successfully!" }, { status: 201 });
+    return Response.json({ status: 201 });
   } catch (error) {
     console.error("Error:", error);
     return Response.json({ message: "Server error" }, { status: 500 });

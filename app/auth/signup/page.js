@@ -25,9 +25,11 @@ export default function SignUp() {
     });
 
     const data = await response.json();
-    setMessage(data.message);
     if (response.ok){
       router.push('/auth/login');
+    }
+    if (!response.ok){
+      setMessage(data.message);
     }
   };
 
@@ -67,7 +69,7 @@ export default function SignUp() {
             Sign Up
           </button>
         </form>
-        {message && <p className="text-center mt-4">{message}</p>}
+        {message && <p className="text-center mt-4 font text-red-500">{message}</p>}
       </div>
     </div>
   );
