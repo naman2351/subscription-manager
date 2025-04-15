@@ -35,7 +35,7 @@ export async function POST(req) {
       [new_user_id,name,email,hashedPassword]
     );
 
-    connection.commit();
+    await connection.commit();
     connection.release();
 
     return Response.json({ status: 201 });

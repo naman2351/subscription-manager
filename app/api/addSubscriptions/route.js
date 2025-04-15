@@ -1,27 +1,36 @@
 import pool from '@/app/lib/db.js'
+import { getSession } from '@/app/lib/session';
 
 export async function POST(req) {
   let connection;
   try {
+    const session = await getSession();
+
+    if (!session || !session.email) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+    const email = session.email;
+
     const body = await req.json();
 
-    const { name, registered_email, amount, frequency, nextPaymentDate, email } = body;
+    const { name, registered_email, amount, frequency, nextPaymentDate } = body;
     connection = await pool.getConnection();
     await connection.beginTransaction();
     const [userRows] = await connection.query(
       'SELECT userid FROM users WHERE email = ?',
       [email]
     );
+    console.log(userRows);
     const userid = userRows[0].userid;
 
     const check_subscription_id = await connection.query(
       'SELECT subscription_id FROM subscriptions ORDER BY subscription_id DESC LIMIT 1'
     );
     let new_subscription_id = 0;
-    if (check_subscription_id[0].length !==0){
+    if (check_subscription_id[0].length !== 0) {
       new_subscription_id = parseInt(check_subscription_id[0][0].subscription_id);
     }
-    new_subscription_id+=1;
+    new_subscription_id += 1;
     await connection.query(
       'INSERT INTO subscriptions (subscription_id, userid, name, registered_email, amount, frequency, next_payment_date) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [new_subscription_id, userid, name, registered_email, amount, frequency, nextPaymentDate]

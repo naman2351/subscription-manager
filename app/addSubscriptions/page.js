@@ -8,7 +8,6 @@ export default function addSubscriptions() {
         amount: "",
         frequency: "",
         nextPaymentDate: "",
-        email: sessionStorage.getItem("userEmail"),
     });
 
     const [message, setMessage] = useState("");
@@ -23,7 +22,7 @@ export default function addSubscriptions() {
             return;
         }
         e.preventDefault();
-        const response = await fetch("/api/subscriptions", {
+        const response = await fetch("/api/addSubscriptions", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData),

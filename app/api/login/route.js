@@ -1,3 +1,5 @@
+"use server";
+import { createSession } from "@/app/lib/createSession";
 import pool from "@/app/lib/db";
 import bcrypt from "bcryptjs";
 
@@ -20,6 +22,14 @@ export async function POST(req) {
     if (!isMatch) {
       return Response.json({ message: "Invalid password" }, { status: 401 });
     }
+
+    connection.release();
+
+    console.log(email)
+
+    const session = await createSession(email);
+    
+    console.log(session)
 
     return Response.json({ message: "Login successful" }, { status: 200 });
   } catch (error) {

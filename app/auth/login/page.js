@@ -21,15 +21,14 @@ export default function Login() {
     const data = await response.json();
 
     if (response.ok) {
-      sessionStorage.setItem("userEmail", email);
-      router.push("/addSubscriptions");
+      router.push("/dashboard");
     } else {
       setError(data.message);
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white font-[Montserrat]">
+    <div className="flex flex-col items-center justify-center h-screen bg-gray-900 text-white font-[Montserrat]">
       <div className="flex flex-col items-center justify-center bg-gray-800 p-8 rounded-md">
         <h2 className="text-2xl font-bold mb-4">Login</h2>
         <form onSubmit={handleLogin} className="flex flex-col space-y-4 shadow-lg">
@@ -39,7 +38,7 @@ export default function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="p-2 rounded text-black bg-white"
+            className="p-2 rounded bg-gray-700"
           />
           <input
             type="password"
@@ -47,7 +46,7 @@ export default function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="p-2 rounded text-black bg-white"
+            className="p-2 rounded bg-gray-700"
           />
           <button type="submit" className="p-2 bg-blue-500 rounded hover:bg-blue-600 hover:cursor-pointer hover:scale-105 transition duration-300">
             Login

@@ -9,26 +9,34 @@ const Subscriptions = () => {
   const [userEmail, setUserEmail] = useState("");
 
   useEffect(() => {
-    const email = sessionStorage.getItem("userEmail");
-    if (email) {
-      setUserEmail(email);
-    }
-
-    const fetchData = async () => {
+    const fetchSessionAndData = async () => {
       try {
-        const res = await fetch("/api/subscriptions");
-        const data = await res.json();
+        const sessionRes = await fetch("/api/session");
+        const sessionData = await sessionRes.json();
+        console.log("Session:", sessionData);
 
-        const userSubscriptions = data.filter(sub => sub.registeredUserEmail === email);
+        if (!sessionRes.ok || !sessionData.email) {
+          setUserEmail("");
+          return;
+        }
+
+        const email = sessionData.email;
+        setUserEmail(email);
+
+        const res = await fetch("/api/dashboard");
+        const data = await res.json();
+        console.log("Subscriptions:", data);
+
+        const userSubscriptions = data.filter(sub => sub.registered_email === email);
 
         let totalMonthly = 0;
         let totalYearly = 0;
         userSubscriptions.forEach(sub => {
-          if (sub.interval === "monthly") {
+          if (sub.frequency === "monthly") {
             totalMonthly += sub.amount;
-            totalYearly += sub.yearly_cost;
-          } else {
-            totalYearly += sub.yearly_cost;
+            totalYearly += sub.amount * 12;
+          } else if (sub.frequency === "yearly") {
+            totalYearly += sub.amount;
           }
         });
 
@@ -37,19 +45,17 @@ const Subscriptions = () => {
         setYearlyTotal(totalYearly);
 
         if (Notification.permission !== "granted") {
-            Notification.requestPermission();
+          Notification.requestPermission();
         }
 
         checkRenewalNotifications(userSubscriptions);
 
       } catch (error) {
-        console.error("Error fetching subscriptions:", error);
+        console.error("Error fetching session/subscriptions:", error);
       }
     };
 
-    if (email) {
-      fetchData();
-    }
+    fetchSessionAndData();
   }, []);
 
   const checkRenewalNotifications = (subscriptions) => {
@@ -57,14 +63,12 @@ const Subscriptions = () => {
     const notificationDays = [10, 5, 3, 2, 1, 0];
 
     subscriptions.forEach((sub) => {
-      sub.payment_dates.forEach((date) => {
-        const renewalDate = new Date(date);
-        const diffDays = Math.ceil((renewalDate - today) / (1000 * 60 * 60 * 24));
+      const renewalDate = new Date(sub.next_payment_date);
+      const diffDays = Math.ceil((renewalDate - today) / (1000 * 60 * 60 * 24));
 
-        if (notificationDays.includes(diffDays)) {
-          sendNotification(sub.name, sub.amount, diffDays);
-        }
-      });
+      if (notificationDays.includes(diffDays)) {
+        sendNotification(sub.name, sub.amount, diffDays);
+      }
     });
   };
 
@@ -95,19 +99,18 @@ const Subscriptions = () => {
               <p className="text-gray-500">No subscriptions found for {userEmail}.</p>
             ) : (
               subscriptions.map((sub) => (
-                <div key={sub.id} className="p-4 border rounded-lg shadow-md">
+                <div key={sub.subscription_id} className="p-4 border rounded-lg shadow-md">
                   <h2 className="text-xl font-semibold">{sub.name}</h2>
-                  <p><strong>Email Used for Subscription:</strong> {sub.email}</p>
+                  <p><strong>Email Used for Subscription:</strong> {sub.registered_email}</p>
                   <p><strong>Amount:</strong> ₹{sub.amount.toFixed(2)}</p>
-                  <p><strong>Payment Interval:</strong> {sub.interval}</p>
-                  <p><strong>Payment Dates:</strong> {sub.payment_dates.join(", ")}</p>
-                  <p><strong>Yearly Cost:</strong> ₹{sub.yearly_cost.toFixed(2)}</p>
+                  <p><strong>Payment Frequency:</strong> {sub.frequency}</p>
+                  <p><strong>Next Payment Date:</strong> {new Date(sub.next_payment_date).toDateString()}</p>
                 </div>
               ))
             )}
           </div>
           {subscriptions.length > 0 && (
-            <div className="mt-8 p-6 bg-gray-500 rounded-lg shadow-md">
+            <div className="mt-8 p-6 bg-gray-500 rounded-lg shadow-md text-white">
               <h2 className="text-2xl font-bold">Expense Summary</h2>
               <p><strong>Total Monthly Spending:</strong> ₹{monthlyTotal.toFixed(2)}</p>
               <p><strong>Total Yearly Spending:</strong> ₹{yearlyTotal.toFixed(2)}</p>
