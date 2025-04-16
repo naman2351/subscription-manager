@@ -87,7 +87,7 @@ const Subscriptions = () => {
   };
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-6 font-[Montserrat]">
       <h1 className="text-3xl font-bold mb-6">Subscription Details</h1>
 
       {!userEmail ? (
@@ -118,8 +118,51 @@ const Subscriptions = () => {
           )}
         </>
       )}
+      {subscriptions.length > 0 && (
+        <div className="mt-4 flex justify-center">
+          <button
+            onClick={() => downloadCSV(subscriptions)}
+            className="bg-blue-600 text-white px-6 py-2 rounded hover:cursor-pointer hover:bg-blue-500 transition duration-300"
+          >
+            Download as CSV
+          </button>
+        </div>
+      )}
     </div>
   );
+};
+
+const downloadCSV = (subscriptions) => {
+  const headers = [
+    "Service Name",
+    "Email Used",
+    "Amount",
+    "Frequency",
+    "Next Payment Date"
+  ];
+
+  const rows = subscriptions.map(sub => [
+    sub.name,
+    sub.registered_email,
+    sub.amount,
+    sub.frequency,
+    new Date(sub.next_payment_date).toLocaleDateString()
+  ]);
+
+  const csvContent = [
+    headers.join(","),
+    ...rows.map(row => row.join(","))
+  ].join("\n");
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", "subscriptions.csv");
+  link.style.display = "none";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 };
 
 export default Subscriptions;

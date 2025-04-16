@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function addSubscriptions() {
+export default function AddSubscriptions() {
     const [formData, setFormData] = useState({
         name: "",
         registered_email: "",
@@ -11,23 +11,57 @@ export default function addSubscriptions() {
     });
 
     const [message, setMessage] = useState("");
+    const [userEmail, setUserEmail] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchSession = async () => {
+            try {
+                const res = await fetch("/api/session");
+                const data = await res.json();
+                if (res.ok && data.email) {
+                    setUserEmail(data.email);
+                }
+            } catch (err) {
+                console.error("Error fetching session:", err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchSession();
+    }, []);
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value })
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
+        e.preventDefault();
         if (!Object.values(formData).every((value) => value !== "")) {
             alert("Please fill out all fields before submitting.");
             return;
         }
-        e.preventDefault();
         const response = await fetch("/api/addSubscriptions", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData),
         });
-        setMessage(response.message);
+        const result = await response.json();
+        setMessage(result.message || "Subscription added.");
+    };
+
+    if (isLoading) {
+        return <div className="text-white text-center mt-8">Checking session...</div>;
+    }
+
+    if (!userEmail) {
+        return (
+            <div className="h-screen bg-gray-900 text-white font-[Montserrat]">
+                <p className="text-red-500 text-lg font-semibold p-6">
+                    You need to log in to see your subscriptions.
+                </p>
+            </div>
+        );
     }
 
     return (
@@ -43,7 +77,7 @@ export default function addSubscriptions() {
                         onChange={handleChange}
                         required
                         className="p-2 my-2 bg-gray-700 rounded"
-                    ></input>
+                    />
                     <input
                         type="email"
                         name="registered_email"
@@ -52,7 +86,7 @@ export default function addSubscriptions() {
                         onChange={handleChange}
                         required
                         className="p-2 my-2 bg-gray-700 rounded"
-                    ></input>
+                    />
                     <input
                         type="number"
                         name="amount"
@@ -61,14 +95,14 @@ export default function addSubscriptions() {
                         onChange={handleChange}
                         required
                         className="p-2 my-2 bg-gray-700 rounded"
-                    ></input>
+                    />
                     <select
                         className="p-2 my-2 bg-gray-700 rounded"
-                        id="frequency"
                         name="frequency"
-                        placeholder="Select frequency of renewal"
                         value={formData.frequency}
-                        onChange={handleChange}>
+                        onChange={handleChange}
+                        required
+                    >
                         <option value="" disabled>Select frequency of renewal</option>
                         <option value="weekly">Weekly</option>
                         <option value="monthly">Monthly</option>
@@ -84,7 +118,7 @@ export default function addSubscriptions() {
                         onChange={handleChange}
                         required
                         className="p-2 my-2 bg-gray-700 rounded"
-                    ></input>
+                    />
                     <button type="submit" className="mt-4 p-2 bg-blue-600 hover:bg-blue-500 rounded hover:cursor-pointer hover:scale-105 transition duration-300">
                         Submit
                     </button>
@@ -92,5 +126,5 @@ export default function addSubscriptions() {
                 {message && <p className="text-center mt-4">{message}</p>}
             </div>
         </div>
-    )
+    );
 }

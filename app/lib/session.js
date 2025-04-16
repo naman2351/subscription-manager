@@ -18,7 +18,7 @@ export async function getSession() {
 }
 
 export async function destroySession() {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     cookieStore.set('session','',{
         httpOnly: true,
         secure: true,
