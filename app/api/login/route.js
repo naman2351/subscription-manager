@@ -1,23 +1,19 @@
-import { promises as fs } from "fs";
-import path from "path";
+"use server";
+import { createSession } from "@/app/lib/createSession";
+import pool from "@/app/lib/db";
 import bcrypt from "bcryptjs";
 
-const filePath = path.join(process.cwd(), "users.json");
-
 export async function POST(req) {
+  let connection;
   try {
     const { email, password } = await req.json();
-    let users = [];
-    try {
-      const data = await fs.readFile(filePath, "utf-8");
-      if (data.trim().length > 0) {
-        users = JSON.parse(data);
-      }
-    } catch (error) {
-      console.error("Error reading file:", error);
-    }
+    connection = await pool.getConnection();
 
-    const user = users.find((u) => u.email === email);
+    const users = await connection.query(
+      "select * from users"
+    );
+
+    const user = users[0].find((u) => u.email === email);
     if (!user) {
       return Response.json({ message: "User not found" }, { status: 404 });
     }
@@ -26,6 +22,14 @@ export async function POST(req) {
     if (!isMatch) {
       return Response.json({ message: "Invalid password" }, { status: 401 });
     }
+
+    connection.release();
+
+    console.log(email)
+
+    const session = await createSession(email);
+    
+    console.log(session)
 
     return Response.json({ message: "Login successful" }, { status: 200 });
   } catch (error) {
